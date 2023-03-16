@@ -5,8 +5,7 @@ from .. import models, schemas, oauth2, utils
 from ..database import get_db
 from openpyxl import load_workbook, drawing
 from datetime import date
-from win32com import client
-import pythoncom, docx, os, warnings
+import docx, os, warnings
 from docx.shared import Inches
 
 
@@ -678,13 +677,6 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
             workbook.save(f'{diretorio}/04_Formulario-MicroGD_Rev_i_{cliente.nome}.xlsx')
             workbook.close()
 
-            excel = client.Dispatch("Excel.Application", pythoncom.CoInitialize())
-            
-            workbook = excel.Workbooks.Open(f'{diretorio}/04_Formulario-MicroGD_Rev_i_{cliente.nome}.xlsx')
-            sheet = workbook.Worksheets[0]
-            sheet.ExportAsFixedFormat(0, f'{diretorio_alterado}\\04_Formulario-MicroGD_Rev_i_{cliente.nome}.pdf')
-            workbook.Close(True)
-            
             if projeto.aumento_carga == False:
                 memorial = docx.Document("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\02_MEMORIAL.docx")
 
@@ -977,13 +969,6 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 
                 memorial.save(f'{diretorio_alterado}\\02_MEMORIAL_{cliente.nome}.docx')
 
-                word = client.Dispatch("Word.Application", pythoncom.CoInitialize())
-
-                memorial = word.Documents.Open(f'{diretorio_alterado}\\02_MEMORIAL_{cliente.nome}.docx')
-                memorial.TablesOfContents(1).Update()
-                memorial.SaveAs2(f'{diretorio_alterado}\\02_MEMORIAL_{cliente.nome}.pdf', FileFormat=17)
-                memorial.Close(SaveChanges=True)
-
             elif projeto.aumento_carga == True:
                 memorial = docx.Document("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\02_MEMORIAL_AUMENTO.docx")
 
@@ -1265,13 +1250,6 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 memorial.paragraphs[paragrafo_atual + 53].text = memorial.paragraphs[paragrafo_atual + 53].text.replace(".", ",")
                 
                 memorial.save(f"{diretorio_alterado}\\02_MEMORIAL_AUMENTO_{cliente.nome}.docx")
-
-                word = client.Dispatch("Word.Application", pythoncom.CoInitialize())
-
-                memorial = word.Documents.Open(f'{diretorio_alterado}\\02_MEMORIAL_AUMENTO_{cliente.nome}.docx')
-                memorial.TablesOfContents(1).Update()
-                memorial.SaveAs2(f"{diretorio_alterado}\\02_MEMORIAL_AUMENTO_{cliente.nome}.pdf", FileFormat=17)
-                memorial.Close(SaveChanges=True)
 
             # Alterando formulário para aumento de carga
             if projeto.aumento_carga == True or (projeto.ligacao_nova == True and instalacao.classificacao != "Rural"):
@@ -1612,11 +1590,6 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 workbook.save(f'{diretorio}//06_Formulário-Ligação-Nova-Urbana-e-Aumento-de-Carga-Sem-Disjuntor-Geral_{cliente.nome}.xlsx')
                 workbook.close()
 
-                workbook = excel.Workbooks.Open(f'{diretorio_alterado}\\06_Formulário-Ligação-Nova-Urbana-e-Aumento-de-Carga-Sem-Disjuntor-Geral_{cliente.nome}.xlsx')
-                sheet = workbook.Worksheets[0]
-                sheet.ExportAsFixedFormat(0, f'{diretorio_alterado}\\06_Formulário-Ligação-Nova-Urbana-e-Aumento-de-Carga-Sem-Disjuntor-Geral_{cliente.nome}.pdf')
-                workbook.Close(True)
-
             # Alterando formulário para ligação nova rural
             if projeto.ligacao_nova == True and instalacao.classificacao == "Rural":
                 workbook = load_workbook('workbooks//06_Formulario-LN-Rural-versao-Q.xlsx')
@@ -1904,11 +1877,6 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
 
                 workbook.save(f'{diretorio}//06_Formulario-LN-Rural-versao-Q_{cliente.nome}.xlsx')
                 workbook.close()
-
-                workbook = excel.Workbooks.Open(f'{diretorio_alterado}\\06_Formulario-LN-Rural-versao-Q_{cliente.nome}.xlsx')
-                sheet = workbook.Worksheets[0]
-                sheet.ExportAsFixedFormat(0, f'{diretorio_alterado}\\06_Formulario-LN-Rural-versao-Q_{cliente.nome}.pdf')
-                workbook.Close(True)
 
             return f"Formulário do cliente {cliente.nome} impresso com sucesso"
 
