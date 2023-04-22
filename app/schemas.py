@@ -10,6 +10,7 @@ class UserCreate(BaseModel): # Classe para os dados necessários para criação 
 class UserOut(BaseModel): # Classe para os dados de saída quando um usuário é criado
     id: int               # ID do usuário
     nome: str             # Nome do usuário
+    cargo: str            # Cargo do usuário
     criado_em: datetime   # Data de criação do usuário
     
     class Config:
