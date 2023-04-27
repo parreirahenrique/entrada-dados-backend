@@ -32,7 +32,7 @@ def create_module(modulo_inserido: schemas.ModuleInsert, db: Session = Depends(g
     
     # Caso o usuário atual não esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de inserir um novo módulo')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de inserir um novo módulo')
     
 # Função para adquirir os dados de um cliente
 @router.get('/modules/{id}', response_model=schemas.ModuleOut)
@@ -52,7 +52,7 @@ def get_one_module(id: int, db: Session = Depends(get_db), usuario_atual: models
         
     # Caso o usuário atual não esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir as informações de um módulo')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de adquirir as informações de um módulo')
     
 # Função para adquirir os dados de todos módulos
 @router.get('/modules', response_model=List[schemas.ModuleOut])
@@ -72,7 +72,7 @@ def get_modules(db: Session = Depends(get_db), usuario_atual: models.Usuario = D
     
     # Caso o usuário atual não esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir os dados dos módulos')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de adquirir os dados dos módulos')
     
 # Função para atualizar os campos de uma instalação
 @router.patch('/modules/{id}', response_model=schemas.ModuleOut)
@@ -162,7 +162,7 @@ def update_instalation(id: int, modulo_atualizado: schemas.ModuleUpdate, db: Ses
 
     # Caso o usuário atual não esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de atualizar um módulo')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de atualizar um módulo')
     
 # Função para deletar uma instalação
 @router.delete('/modules/{id}', status_code=status.HTTP_204_NO_CONTENT)
@@ -183,4 +183,4 @@ def delete_instalation(id: int, db: Session = Depends(get_db), usuario_atual: mo
     
     # Caso o usuário atual esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de deletar um módulo')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de deletar um módulo')
