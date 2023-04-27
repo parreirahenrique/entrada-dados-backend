@@ -23,7 +23,7 @@ def create_client(cliente: schemas.ClientInsert, db: Session = Depends(get_db), 
     
     # Caso o usuário atual não esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de inserir um novo cliente')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de inserir um novo cliente')
 
 # Função para adquirir os dados de um cliente
 @router.get('/clients/{numero_cliente}', response_model=schemas.ClientOut)
@@ -43,7 +43,7 @@ def get_one_client(numero_cliente: int, db: Session = Depends(get_db), usuario_a
         
     # Caso o usuário atual não esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir os dados de um cliente')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de adquirir os dados de um cliente')
 
 # Função para adquirir os dados de todos cliente
 @router.get('/clients', response_model=List[schemas.ClientOut])
@@ -63,7 +63,7 @@ def get_clients(db: Session = Depends(get_db), usuario_atual: models.Usuario = D
     
     # Caso o usuário atual não esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir os dados de um cliente')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de adquirir os dados de um cliente')
     
 # Função para atualizar os campos de um cliente
 @router.patch('/clients/{numero_cliente}', response_model=schemas.ClientOut)
@@ -113,7 +113,7 @@ def update_client(numero_cliente: int, cliente_atualizado: schemas.ClientUpdate,
 
     # Caso o usuário atual não esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de atualizar um cliente')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de atualizar um cliente')
     
 # Função para deletar um cliente
 @router.delete('/clients/{numero_cliente}', status_code=status.HTTP_204_NO_CONTENT)
@@ -133,4 +133,4 @@ def delete_client(numero_cliente: int, db: Session = Depends(get_db), usuario_at
     
     # Caso o usuário atual esteja validado
     else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de deletar um cliente')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de deletar um cliente')
