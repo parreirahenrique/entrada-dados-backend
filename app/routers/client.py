@@ -65,6 +65,26 @@ def get_clients(db: Session = Depends(get_db), usuario_atual: models.Usuario = D
     else:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de adquirir os dados de um cliente')
     
+# Função para adquirir os dados de todos cliente
+@router.get('/all-clients', response_model=List[schemas.ClientOut])
+def get_all_clients(db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
+    # Caso o usuário atual esteja validado
+    if usuario_atual != None:
+        # Filtrando os clientes do banco de dados de acordo com os parâmetros passados
+        clientes = db.query(models.Cliente).all()
+        
+        # Caso os parâmetros de busca tenham sido válidos
+        if clientes != []:
+            return clientes
+        
+        # Caso os parâmetros de busca não tenham sido válidos
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Parâmetros de busca passados não exibiram nenhum resultado')
+    
+    # Caso o usuário atual não esteja validado
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de adquirir os dados de um cliente')
+
 # Função para atualizar os campos de um cliente
 @router.patch('/clients/{numero_cliente}', response_model=schemas.ClientOut)
 def update_client(numero_cliente: int, cliente_atualizado: schemas.ClientUpdate, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
