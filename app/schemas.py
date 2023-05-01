@@ -118,6 +118,7 @@ class ModuleUpdate(BaseModel):               # Classe para os dados necessários
     coeficiente_temperatura: Optional[float] # Coeficiente de temperatura de circuito aberto
     
 class ModuleOut(ModuleInsert): # Classe para os dados de saída quando um novo módulo for inserido
+    id: str                    # Além dos dados necessários na inserção do módulo, retorna a ID
     criado_em: datetime        # Além dos dados necessários na inserção do módulo, retorna a data e hora de criação
     criado_por: int            # Além dos dados necessários na inserção da instalação, retorna quem inseriu
 
