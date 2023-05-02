@@ -165,6 +165,7 @@ class InverterUpdate(BaseModel): # Classe para os dados necessários para a inse
     eficiencia: Optional[float]  # Eficiência
     
 class InverterOut(InverterInsert): # Classe para os dados de saída quando um novo inversor for inserido
+    id: str                        # Além dos dados necessários na inserção do inversor, retorna a ID
     criado_em: datetime            # Além dos dados necessários na inserção do inversor, retorna a data e hora de criação
     criado_por: int                # Além dos dados necessários na inserção da instalação, retorna quem inseriu
 
