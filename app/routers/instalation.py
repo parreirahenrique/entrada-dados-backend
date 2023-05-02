@@ -137,8 +137,23 @@ def update_instalation(numero_instalacao: int, instalacao_atualizada: schemas.In
 
             # Caso seja desejado atualizar o número da instalação
             if instalacao_atualizada.numero_instalacao != None:
-                instalacao.numero_instalacao = instalacao_atualizada.numero_instalacao
-                instalacao.criado_por = usuario_atual.id
+
+                # Caso não tenha sido informado um número de instalação para os casos de ligação nova
+                if instalacao_atualizada.numero_instalacao == 0:
+                    # Determinando um número de instalação fictício para as ligações novas
+                    instalacoes = db.query(models.Instalacao).all()
+                    id_max: int = 0
+            
+                    for i in instalacoes:
+                        if i.numero_instalacao > id_max and i.numero_instalacao < 3000000000:
+                            id_max = i.numero_instalacao
+                            
+                    instalacao.numero_instalacao = id_max + 1
+                
+                # Caso tenha sido informado um número de instalação
+                elif instalacao_atualizada.numero_instalacao != 0:
+                    instalacao.numero_instalacao = instalacao_atualizada.numero_instalacao
+                    instalacao.criado_por = usuario_atual.id
 
             # Caso seja desejado atualizar o número do cliente
             if instalacao_atualizada.numero_cliente != None:
