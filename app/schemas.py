@@ -213,6 +213,7 @@ class ProjectInsert(BaseModel):                 # Classe para os dados necessár
     modelo_inversor_4: Optional[str] = None     # Modelo do quarto inversor
     
 class ProjectOut(ProjectInsert):                # Classe para os dados de saída quando um novo projeto for inserido
+    id: int                                     # ID do projeto
     carga: int                                  # Carga instalada
     quantidade_modulos: int                     # Quantidade total de módulos
     potencia_modulos_anterior: float            # Potência total dos módulos anteriores
@@ -233,6 +234,7 @@ class ProjectOut(ProjectInsert):                # Classe para os dados de saída
     geracao_10: float                           # Geração média mensal de outubro
     geracao_11: float                           # Geração média mensal de novembro
     geracao_12: float                           # Geração média mensal de dezembro
+    criado_em: datetime                         # Data de criação do projeto
 
     class Config:
         orm_mode = True
