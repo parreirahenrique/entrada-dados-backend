@@ -202,6 +202,25 @@ def get_projects(db: Session = Depends(get_db), usuario_atual: models.Usuario = 
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir os dados dos módulos')
     
+# Função para adquirir os dados de todos projetos
+@router.get('/all-projects', response_model=List[schemas.ProjectOut])
+def get_projects(db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
+    # Caso o usuário atual esteja validado
+    if usuario_atual != None:
+        projects = db.query(models.Projeto).all()
+        
+        # Caso os parâmetros de busca tenham sido válidos
+        if projects != []:
+            return projects
+        
+        # Caso os parâmetros de busca não tenham sido válidos
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Parâmetros de busca passados não exibiram nenhum resultado')
+    
+    # Caso o usuário atual não esteja validado
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir os dados dos módulos')
+    
 # Função para atualizar os campos de um projeto
 @router.patch('/projects/{id}', response_model=schemas.ProjectOut)
 def update_project(id: int, projeto_atualizado: schemas.ProjectUpdate, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):

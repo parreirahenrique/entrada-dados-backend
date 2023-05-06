@@ -73,8 +73,28 @@ def get_modules(db: Session = Depends(get_db), usuario_atual: models.Usuario = D
     # Caso o usuário atual não esteja validado
     else:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de adquirir os dados dos módulos')
+
+# Função para adquirir os dados dos módulos de um fabricante
+@router.get('/modules-{fabricante}', response_model=List[schemas.ModuleOut])
+def get_modules(fabricante: str, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
+    # Caso o usuário atual esteja validado
+    if usuario_atual != None:
+        # Filtrando os módulos do banco de dados de acordo com os parâmetros passados
+        modules = db.query(models.Modulo).filter(models.Modulo.fabricante.contains(fabricante) == True).all()
+        
+        # Caso os parâmetros de busca tenham sido válidos
+        if modules != []:
+            return modules
+        
+        # Caso os parâmetros de busca não tenham sido válidos
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Parâmetros de busca passados não exibiram nenhum resultado')
     
-    # Função para adquirir os dados de todos módulos
+    # Caso o usuário atual não esteja validado
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Por favor, faça login antes de adquirir os dados dos módulos')
+
+# Função para adquirir os dados de todos módulos
 @router.get('/all-modules', response_model=List[schemas.ModuleOut])
 def get_all_modules(db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
     # Caso o usuário atual esteja validado

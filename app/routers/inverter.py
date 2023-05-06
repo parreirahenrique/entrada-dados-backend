@@ -93,6 +93,26 @@ def get_inverters(db: Session = Depends(get_db), usuario_atual: models.Usuario =
     # Caso o usuário atual não esteja validado
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir os dados dos inversores')
+        
+# Função para adquirir os dados de todos inversores de um fabricante
+@router.get('/inverters-{fabricante}', response_model=List[schemas.InverterOut])
+def get_inverters(fabricante: str, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
+    # Caso o usuário atual esteja validado
+    if usuario_atual != None:
+        # Filtrando os inversores do banco de dados de acordo com os parâmetros passados
+        inversores = db.query(models.Inversor).filter(models.Inversor.fabricante.contains(fabricante) == True).all()
+        
+        # Caso os parâmetros de busca tenham sido válidos
+        if inversores != []:
+            return inversores
+        
+        # Caso os parâmetros de busca não tenham sido válidos
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Parâmetros de busca passados não exibiram nenhum resultado')
+    
+    # Caso o usuário atual não esteja validado
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir os dados dos inversores')
     
 # Função para atualizar os campos de um inversor
 @router.patch('/inverters/{id}', response_model=schemas.InverterOut)
