@@ -130,7 +130,7 @@ class InverterInsert(BaseModel):   # Classe para os dados necessários para a in
     modelo: str                    # Modelo
     fabricante: str                # Fabricante
     potencia: int                  # Potência de pico
-    overload: int
+    overload: int                  # Overload
     imp: float                     # Corrente no ponto de máxima potência
     isc: float                     # Corrente de curto circuito
     v_min_mppt: int                # Tensão mínima do range da MPPT
@@ -182,9 +182,9 @@ class ProjectInsert(BaseModel):                 # Classe para os dados necessár
     agrupamento: bool                           # Identificação se a unidade consumidora pertence a um agrupamento
     n_fases: str                                # Número de fases da unidade consumidora
     disjuntor: int                              # Disjuntor da unidade consumidora
-    novo_n_fases: Optional[str] = None          # Novo número de fases da unidade consumidora
+    novo_n_fases: Optional[str]                 # Novo número de fases da unidade consumidora
     novo_disjuntor: Optional[int] = 0           # Novo disjuntor da unidade consumidora
-    n_fases_agrupamento: Optional[str] = None   # Número de fases do agrupamento
+    n_fases_agrupamento: Optional[str]          # Número de fases do agrupamento
     disjuntor_agrupamento: Optional[int] = 0    # Disjuntor do agrupamento
     tensao: int                                 # Tensão de atendimento
     

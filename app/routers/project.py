@@ -380,10 +380,13 @@ def update_project(id: int, projeto_atualizado: schemas.ProjectUpdate, db: Sessi
             )
             
             modulo_1 = db.query(models.Modulo).filter(models.Modulo.modelo == projeto.modelo_modulo_1).first()
-            modulo_2 = db.query(models.Modulo).filter(models.Modulo.modelo == projeto.modelo_modulo_2).first()
+            modulo_2 = models.Modulo()
+
+            if projeto.modelo_modulo_2 != '':
+                modulo_2 = db.query(models.Modulo).filter(models.Modulo.modelo == projeto.modelo_modulo_2).first()
 
             # Determinando a área total ocupada pelos módulos
-            if projeto.modelo_modulo_2 != None:
+            if projeto.modelo_modulo_2 != '':
                 projeto.area = utils.area_modulos(
                     projeto.quantidade_modulo_1, modulo_1.comprimento, modulo_1.largura,
                     projeto.quantidade_modulo_2, modulo_2.comprimento, modulo_2.largura
