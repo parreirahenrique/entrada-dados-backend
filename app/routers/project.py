@@ -492,7 +492,7 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
 
         # Caso a ID informada esteja presente no banco de dados
         if projeto != None:
-            workbook = load_workbook('workbooks//04_Formulario-MicroGD_Rev_i.xlsx')
+            workbook = load_workbook('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//04_Formulario-MicroGD_Rev_i.xlsx')
             sheet = workbook.get_sheet_by_name('Formulário')
             
             projeto = db.query(models.Projeto).filter(models.Projeto.id == id).first()
@@ -542,8 +542,8 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
             # Criando diretório para o projeto
             numero_inicial: int = 1273
             numero_projeto = numero_inicial + projeto.id
-            diretorio = f"C:/Users/henrique/Documents/entrada-dados/workbooks/saída/{numero_projeto} {cliente.nome}"
-            diretorio_alterado = f"C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks/saída\\{numero_projeto} {cliente.nome}"
+            diretorio = f"C:/Users/Henrique Castro/Documents/entrada-dados/workbooks/saída/{numero_projeto} {cliente.nome}"
+            diretorio_alterado = f"C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\saída\\{numero_projeto} {cliente.nome}"
 
             if not os.path.exists(diretorio):
                 os.makedirs(diretorio)
@@ -693,14 +693,14 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
             dia_atual = date.today().strftime("%d/%m/%Y")
             sheet["C167"] = instalacao.cidade + ", " + dia_atual
 
-            assinatura = drawing.image.Image('workbooks//assinatura.png')
+            assinatura = drawing.image.Image('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//assinatura.png')
             assinatura.anchor = "V167"
             
             workbook.save(f'{diretorio}/04_Formulario-MicroGD_Rev_i_{cliente.nome}.xlsx')
             workbook.close()
 
             if projeto.aumento_carga == False:
-                memorial = docx.Document("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\02_MEMORIAL.docx")
+                memorial = docx.Document("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\02_MEMORIAL.docx")
 
                 # Alterando informações da capa do memorial
                 memorial.paragraphs[25].text = memorial.paragraphs[25].text.replace("XXXX", instalacao.classificacao)
@@ -746,12 +746,12 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 memorial.paragraphs[81].text = ""
                 paragrafo_imagem = memorial.paragraphs[81]
                 run_imagem = paragrafo_imagem.add_run()
-                run_imagem.add_picture("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\foto-satelite.jpg", height=Inches(3.14961))
+                run_imagem.add_picture("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\foto-satelite.jpg", height=Inches(3.14961))
 
                 memorial.paragraphs[83].text = ""
                 paragrafo_imagem = memorial.paragraphs[83]
                 run_imagem = paragrafo_imagem.add_run()
-                run_imagem.add_picture("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\foto-disjuntor.jpeg", height=Inches(3.54331))
+                run_imagem.add_picture("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\foto-disjuntor.jpeg", height=Inches(3.54331))
                 
                 paragrafo_atual: int = 118
                 incremento: int = 0
@@ -992,7 +992,7 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 memorial.save(f'{diretorio_alterado}\\02_MEMORIAL_{cliente.nome}.docx')
 
             elif projeto.aumento_carga == True:
-                memorial = docx.Document("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\02_MEMORIAL_AUMENTO.docx")
+                memorial = docx.Document("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\02_MEMORIAL_AUMENTO.docx")
 
                 # Alterando informações da capa do memorial
                 memorial.paragraphs[25].text = memorial.paragraphs[25].text.replace("XXXX", instalacao.classificacao)
@@ -1021,17 +1021,17 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 memorial.paragraphs[81].text = ""
                 paragrafo_imagem = memorial.paragraphs[81]
                 run_imagem = paragrafo_imagem.add_run()
-                run_imagem.add_picture("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\foto-satelite.jpg", height=Inches(3.14961))
+                run_imagem.add_picture("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\foto-satelite.jpg", height=Inches(3.14961))
 
                 memorial.paragraphs[83].text = ""
                 paragrafo_imagem = memorial.paragraphs[83]
                 run_imagem = paragrafo_imagem.add_run()
-                run_imagem.add_picture("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\foto-disjuntor.jpeg", height=Inches(3.54331))
+                run_imagem.add_picture("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\foto-disjuntor.jpeg", height=Inches(3.54331))
 
                 memorial.paragraphs[87].text = ""
                 paragrafo_imagem = memorial.paragraphs[87]
                 run_imagem = paragrafo_imagem.add_run()
-                run_imagem.add_picture("C:\\Users\\henrique\\Documents\\entrada-dados\\workbooks\\foto-aumento.jpg", height=Inches(3.54331))
+                run_imagem.add_picture("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\foto-aumento.jpg", height=Inches(3.54331))
                 
                 memorial.paragraphs[93].text = memorial.paragraphs[93].text.replace("XXXX", str(instalacao.latitude + 2))
                 memorial.paragraphs[94].text = memorial.paragraphs[94].text.replace("XXXX", str(instalacao.longitude + 2))
@@ -1275,7 +1275,7 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
 
             # Alterando formulário para aumento de carga
             if projeto.aumento_carga == True or (projeto.ligacao_nova == True and instalacao.classificacao != "Rural"):
-                workbook = load_workbook('workbooks//06_Formulário-Ligação-Nova-Urbana-e-Aumento-de-Carga-Sem-Disjuntor-Geral.xlsx')
+                workbook = load_workbook('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//06_Formulário-Ligação-Nova-Urbana-e-Aumento-de-Carga-Sem-Disjuntor-Geral.xlsx')
                 sheet = workbook.get_sheet_by_name('Formulário Ligação Nova Urbana')
 
                 sheet["D25"] = cliente.nome
