@@ -78,7 +78,7 @@ def get_instalations(db: Session = Depends(get_db), usuario_atual: models.Usuari
 
 # Função para adquirir os dados de todas instalações
 @router.get('/all-instalations', response_model=List[schemas.InstalationOut])
-def get_instalations(db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
+def get_all_instalations(db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
     # Caso o usuário atual esteja validado
     if usuario_atual != None:
         # Filtrando as instalações do banco de dados de acordo com os parâmetros passados
@@ -95,7 +95,7 @@ def get_instalations(db: Session = Depends(get_db), usuario_atual: models.Usuari
     # Caso o usuário atual não esteja validado
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Por favor, faça login antes de adquirir os dados das intalações')
-    
+
 # Função para atualizar os campos de uma instalação
 @router.patch('/instalations/{numero_instalacao}', response_model=schemas.InstalationOut)
 def update_instalation(numero_instalacao: int, instalacao_atualizada: schemas.InstalationUpdate, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
