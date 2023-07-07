@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from .. import models, schemas, oauth2, utils
 from ..database import get_db
-from openpyxl import load_workbook, drawing
+from openpyxl import load_workbook
+from openpyxl.drawing.image import Image
 from datetime import date
 import docx, os, warnings
 from docx.shared import Inches
@@ -492,7 +493,7 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
 
         # Caso a ID informada esteja presente no banco de dados
         if projeto != None:
-            workbook = load_workbook('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//04_Formulario-MicroGD_Rev_i.xlsx')
+            workbook = load_workbook('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//04 - Formulario de Solicitacao de Acesso.xlsx')
             sheet = workbook.get_sheet_by_name('Formulário')
             
             projeto = db.query(models.Projeto).filter(models.Projeto.id == id).first()
@@ -540,11 +541,29 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 novo_fases = "Trifásico"
             
             # Criando diretório para o projeto
-            numero_inicial: int = 1273
+            numero_inicial: int = 1
             numero_projeto = numero_inicial + projeto.id
-            diretorio = f"C:/Users/Henrique Castro/Documents/entrada-dados/workbooks/saída/{numero_projeto} {cliente.nome}"
-            diretorio_alterado = f"C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\saída\\{numero_projeto} {cliente.nome}"
+            nome_completo = cliente.nome.split(" ")
+            nome_pasta = ""
 
+            for nome in nome_completo:
+                nome_pasta += nome[0] + nome[1:].lower() + " "
+
+            nome_completo = nome_pasta[:-1]
+
+            if numero_projeto < 10:
+                diretorio = f"G:/Meu Drive/Projetos fotovoltaicos/Projetos elaborados/00{numero_projeto} - {nome_completo}"
+                diretorio_alterado = f"G:\\Meu Drive\\Projetos fotovoltaicos\\Projetos elaborados\\00{numero_projeto} - {nome_completo}"
+
+            elif numero_projeto >= 10 and numero_projeto < 100:
+                diretorio = f"G:/Meu Drive/Projetos fotovoltaicos/Projetos elaborados/0{numero_projeto} - {nome_completo}"
+                diretorio_alterado = f"G:\\Meu Drive\\Projetos fotovoltaicos\\Projetos elaborados\\0{numero_projeto} - {nome_completo}"
+
+            elif numero_projeto >= 100:
+                diretorio = f"G:/Meu Drive/Projetos fotovoltaicos/Projetos elaborados/{numero_projeto} - {nome_completo}"
+                diretorio_alterado = f"G:\\Meu Drive\\Projetos fotovoltaicos\\Projetos elaborados\\{numero_projeto} - {nome_completo}"
+
+            
             if not os.path.exists(diretorio):
                 os.makedirs(diretorio)
             
@@ -565,9 +584,9 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
             sheet["T20"] = instalacao.cidade
             sheet["AN20"] = "MG"
             sheet["AS20"] = instalacao.cep
-            sheet["F22"] = 3734021468
-            sheet["O22"] = 37998044360
-            sheet["Y22"] = "amorim.willy@hotmail.com"
+            sheet["F22"] = 3798262232
+            sheet["O22"] = 37998262232
+            sheet["Y22"] = "engenharia@apollofotovoltaica.com.br"
 
             # Preenchendo dados da unidade consumidora
             sheet["V27"] = 23
@@ -645,14 +664,15 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
             sheet["X52"] = "Aéreo"
 
             # Preenchendo dados da geração
-            sheet["L59"] = "Solar"
-            sheet["L61"] = "Consumo Local"
-            sheet["AS61"] = 1
+            sheet["L80"] = "Solar"
+            sheet["H82"] = "Empregando conversor eletrônico/inversor"
+            sheet["L84"] = "Compensação local"
+            sheet["AS84"] = 1
 
-            sheet["P69"] = projeto.potencia_modulos
-            sheet["P71"] = projeto.potencia_inversores
-            sheet["P73"] = projeto.area
-            sheet["P75"] = projeto.quantidade_modulos
+            sheet["P92"] = projeto.potencia_modulos
+            sheet["P94"] = projeto.potencia_inversores
+            sheet["P96"] = projeto.area
+            sheet["P98"] = projeto.quantidade_modulos
 
             fabricante_modulos = modulo_1.fabricante
             modelo_modulos = projeto.modelo_modulo_1
@@ -661,9 +681,9 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 fabricante_modulos = fabricante_modulos + " / " + modulo_2.fabricante
                 modelo_modulos = modelo_modulos + " / " + projeto.modelo_modulo_2
 
-            sheet["P77"] = modelo_modulos
-            sheet["P79"] = fabricante_modulos
-            sheet["P81"] = projeto.quantidade_inversores
+            sheet["P100"] = modelo_modulos
+            sheet["P102"] = fabricante_modulos
+            sheet["P104"] = projeto.quantidade_inversores
 
             fabricante_inversores = inversor_1.fabricante
             modelo_inversores = projeto.modelo_inversor_1
@@ -680,50 +700,50 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 fabricante_inversores = fabricante_inversores + " / " + inversor_4.fabricante
                 modelo_inversores = modelo_inversores + " / " + projeto.modelo_inversor_4
 
-            sheet["P83"] = modelo_inversores
-            sheet["P85"] = fabricante_inversores
+            sheet["P106"] = modelo_inversores
+            sheet["P108"] = fabricante_inversores
 
             # Preenchendo dados do solicitante
-            sheet["Q151"] = "Willy Amorim Magalhães"
-            sheet["O153"] = "Rua Isaurino do Vale, 225, Vila Tavares, Itaúna - MG"
-            sheet["F157"] = 3734021468
-            sheet["O157"] = 37998044360
-            sheet["Y157"] = "amorim.willy@hotmail.com"
+            sheet["Q194"] = "André Luís Queiroz Nogueira"
+            sheet["O196"] = "Rua Agripino Lima, 68 Ap. 202, Centro, Itaúna - MG"
+            sheet["F200"] = 3798262232
+            sheet["O200"] = 37998262232
+            sheet["Y200"] = "engenharia@apollofotovoltaica.com.br"
 
             dia_atual = date.today().strftime("%d/%m/%Y")
-            sheet["C167"] = instalacao.cidade + ", " + dia_atual
+            sheet["C210"] = instalacao.cidade + ", " + dia_atual
 
-            assinatura = drawing.image.Image('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//assinatura.png')
-            assinatura.anchor = "V167"
+            assinatura = Image('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//assinatura.png')
+            sheet.add_image(assinatura, "V210")
             
-            workbook.save(f'{diretorio}/04_Formulario-MicroGD_Rev_i_{cliente.nome}.xlsx')
+            workbook.save(f'{diretorio}/04 - Formulario de Solicitacao de Acesso - {nome_completo}.xlsx')
             workbook.close()
 
             if projeto.aumento_carga == False:
-                memorial = docx.Document("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\02_MEMORIAL.docx")
+                memorial = docx.Document("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\02 - Memorial Descritivo.docx")
 
                 # Alterando informações da capa do memorial
-                memorial.paragraphs[25].text = memorial.paragraphs[25].text.replace("XXXX", instalacao.classificacao)
-                memorial.paragraphs[29].text = memorial.paragraphs[29].text.replace("XXXX", instalacao.cidade)
-                memorial.paragraphs[30].text = memorial.paragraphs[30].text.replace("XXXX", dia_atual)
+                memorial.paragraphs[17].text = memorial.paragraphs[17].text.replace("XXXX", instalacao.classificacao)
+                memorial.paragraphs[31].text = memorial.paragraphs[31].text.replace("XXXX", instalacao.cidade)
+                memorial.paragraphs[32].text = memorial.paragraphs[32].text.replace("XXXX", dia_atual)
                 
                 # Alterando informações da seção objetivo
-                memorial.paragraphs[51].text = memorial.paragraphs[51].text.replace("XXXX", instalacao.cidade)
+                memorial.paragraphs[55].text = memorial.paragraphs[55].text.replace("XXXX", instalacao.cidade)
 
                 # Alterando informações da seção dados da unidade consumidora
-                memorial.paragraphs[54].text = memorial.paragraphs[54].text.replace("XXXX", cliente.nome)
-                memorial.paragraphs[55].text = memorial.paragraphs[55].text.replace("XXXX", instalacao.logradouro + ", " + str(instalacao.numero_predial) + " " + instalacao.complemento + ", " + instalacao.bairro + ", " + instalacao.cidade + " - MG")
-                memorial.paragraphs[56].text = memorial.paragraphs[56].text.replace("XXXX", cliente.cpf)
+                memorial.paragraphs[58].text = memorial.paragraphs[58].text.replace("XXXX", cliente.nome)
+                memorial.paragraphs[59].text = memorial.paragraphs[59].text.replace("XXXX", instalacao.logradouro + ", " + str(instalacao.numero_predial) + " " + instalacao.complemento + ", " + instalacao.bairro + ", " + instalacao.cidade + " - MG")
+                memorial.paragraphs[60].text = memorial.paragraphs[60].text.replace("XXXX", cliente.cpf)
                 
                 if projeto.ligacao_nova == False:
-                    memorial.paragraphs[57].text = memorial.paragraphs[57].text.replace("XXXX", str(projeto.numero_instalacao))
+                    memorial.paragraphs[61].text = memorial.paragraphs[61].text.replace("XXXX", str(projeto.numero_instalacao))
                     
                 else:
-                    memorial.paragraphs[57].text = memorial.paragraphs[57].text.replace("XXXX", "")
-                    memorial.paragraphs[61].text = memorial.paragraphs[61].text.replace("atual", "solicitado")
+                    memorial.paragraphs[61].text = memorial.paragraphs[61].text.replace("XXXX", "")
+                    memorial.paragraphs[65].text = memorial.paragraphs[65].text.replace("atual", "solicitado")
 
-                memorial.paragraphs[58].text = memorial.paragraphs[58].text.replace("XXXX", str(projeto.numero_cliente))
-                memorial.paragraphs[59].text = memorial.paragraphs[59].text.replace("XXXX", instalacao.classificacao)
+                memorial.paragraphs[62].text = memorial.paragraphs[62].text.replace("XXXX", str(projeto.numero_cliente))
+                memorial.paragraphs[63].text = memorial.paragraphs[63].text.replace("XXXX", instalacao.classificacao)
                 
                 fases: str
 
@@ -736,47 +756,47 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 elif projeto.n_fases == "Tripolar":
                     fases = "Trifásico"
 
-                memorial.paragraphs[60].text = memorial.paragraphs[60].text.replace("XXXX", instalacao.classificacao + " " + fases)
-                memorial.paragraphs[61].text = memorial.paragraphs[61].text.replace("XXXX", projeto.n_fases + " de " + str(projeto.disjuntor) + " A")
-                memorial.paragraphs[63].text = memorial.paragraphs[63].text.replace("XXXX", str(projeto.area))
-                memorial.paragraphs[63].text = memorial.paragraphs[63].text.replace(".", ",")
-                memorial.paragraphs[67].text = memorial.paragraphs[67].text.replace("XXXX", str(instalacao.longitude))
-                memorial.paragraphs[68].text = memorial.paragraphs[68].text.replace("XXXX", str(instalacao.latitude))
+                memorial.paragraphs[64].text = memorial.paragraphs[64].text.replace("XXXX", instalacao.classificacao + " " + fases)
+                memorial.paragraphs[65].text = memorial.paragraphs[65].text.replace("XXXX", projeto.n_fases + " de " + str(projeto.disjuntor) + " A")
+                memorial.paragraphs[67].text = memorial.paragraphs[67].text.replace("XXXX", str(projeto.area))
+                memorial.paragraphs[67].text = memorial.paragraphs[67].text.replace(".", ",")
+                memorial.paragraphs[71].text = memorial.paragraphs[71].text.replace("XXXX", str(instalacao.longitude))
+                memorial.paragraphs[72].text = memorial.paragraphs[72].text.replace("XXXX", str(instalacao.latitude))
                 
-                memorial.paragraphs[81].text = ""
-                paragrafo_imagem = memorial.paragraphs[81]
+                memorial.paragraphs[85].text = ""
+                paragrafo_imagem = memorial.paragraphs[85]
                 run_imagem = paragrafo_imagem.add_run()
-                run_imagem.add_picture("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\foto-satelite.jpg", height=Inches(3.14961))
+                run_imagem.add_picture("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\foto-satelite.jpg", height=Inches(3.54331))
 
-                memorial.paragraphs[83].text = ""
-                paragrafo_imagem = memorial.paragraphs[83]
+                memorial.paragraphs[87].text = ""
+                paragrafo_imagem = memorial.paragraphs[87]
                 run_imagem = paragrafo_imagem.add_run()
                 run_imagem.add_picture("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\foto-disjuntor.jpeg", height=Inches(3.54331))
                 
-                paragrafo_atual: int = 118
+                paragrafo_atual: int = 122
                 incremento: int = 0
 
                 # Alterando informações da seção descrição geral da geração distribuída
                 if projeto.modelo_modulo_2 != "":
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[98].text.replace("XXXX", str(modulo_2.comprimento) + " x " + str(modulo_2.largura) + " x " + str(modulo_2.espessura) + " mm"))
-                    memorial.paragraphs[99].text = memorial.paragraphs[99].text.replace(".", ",")
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[97].text.replace("XXXX", modulo_2.temperatura_nominal))
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[96].text.replace("XXXX", str(modulo_2.eficiencia)))
-                    memorial.paragraphs[99].text = memorial.paragraphs[99].text.replace(".", ",")
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[95].text.replace("XXXX", str(modulo_2.voc) + " V"))
-                    memorial.paragraphs[99].text = memorial.paragraphs[99].text.replace(".", ",")
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[94].text.replace("XXXX", str(modulo_2.vmp) + " V"))
-                    memorial.paragraphs[99].text = memorial.paragraphs[99].text.replace(".", ",")
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[93].text.replace("XXXX", str(modulo_2.isc) + " A"))
-                    memorial.paragraphs[99].text = memorial.paragraphs[99].text.replace(".", ",")
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[92].text.replace("XXXX", str(modulo_2.imp) + " A"))
-                    memorial.paragraphs[99].text = memorial.paragraphs[99].text.replace(".", ",")
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[91].text.replace("XXXX", str(modulo_2.potencia) + " Wp"))
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[90].text.replace("XXXX", modulo_2.tipo))
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[89].text.replace("XXXX", modulo_2.fabricante))
-                    memorial.paragraphs[99].insert_paragraph_before(memorial.paragraphs[88].text.replace("XXXX", modulo_2.modelo))
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[102].text.replace("XXXX", str(modulo_2.comprimento) + " x " + str(modulo_2.largura) + " x " + str(modulo_2.espessura) + " mm"))
+                    memorial.paragraphs[103].text = memorial.paragraphs[103].text.replace(".", ",")
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[101].text.replace("XXXX", modulo_2.temperatura_nominal))
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[100].text.replace("XXXX", str(modulo_2.eficiencia)))
+                    memorial.paragraphs[103].text = memorial.paragraphs[103].text.replace(".", ",")
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[99].text.replace("XXXX", str(modulo_2.voc) + " V"))
+                    memorial.paragraphs[103].text = memorial.paragraphs[103].text.replace(".", ",")
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[98].text.replace("XXXX", str(modulo_2.vmp) + " V"))
+                    memorial.paragraphs[103].text = memorial.paragraphs[103].text.replace(".", ",")
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[97].text.replace("XXXX", str(modulo_2.isc) + " A"))
+                    memorial.paragraphs[103].text = memorial.paragraphs[103].text.replace(".", ",")
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[96].text.replace("XXXX", str(modulo_2.imp) + " A"))
+                    memorial.paragraphs[103].text = memorial.paragraphs[103].text.replace(".", ",")
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[87].text.replace("XXXX", str(modulo_2.potencia) + " Wp"))
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[86].text.replace("XXXX", modulo_2.tipo))
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[85].text.replace("XXXX", modulo_2.fabricante))
+                    memorial.paragraphs[103].insert_paragraph_before(memorial.paragraphs[84].text.replace("XXXX", modulo_2.modelo))
 
-                    memorial.paragraphs[99].style = "Tópicos"
+                    memorial.paragraphs[103].style = "Tópicos"
                     memorial.paragraphs[100].style = "Tópicos"
                     memorial.paragraphs[101].style = "Tópicos"
                     memorial.paragraphs[102].style = "Tópicos"
@@ -788,26 +808,26 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                     memorial.paragraphs[108].style = "Tópicos"
                     memorial.paragraphs[109].style = "Tópicos"
                     
-                    memorial.paragraphs[99].insert_paragraph_before()
+                    memorial.paragraphs[103].insert_paragraph_before()
                     paragrafo_atual += 12
                 
-                memorial.paragraphs[88].text = memorial.paragraphs[88].text.replace("XXXX", modulo_1.modelo)
-                memorial.paragraphs[89].text = memorial.paragraphs[89].text.replace("XXXX", modulo_1.fabricante)
-                memorial.paragraphs[90].text = memorial.paragraphs[90].text.replace("XXXX", modulo_1.tipo)
-                memorial.paragraphs[91].text = memorial.paragraphs[91].text.replace("XXXX", str(modulo_1.potencia) + " Wp")
-                memorial.paragraphs[92].text = memorial.paragraphs[92].text.replace("XXXX", str(modulo_1.imp) + " A")
-                memorial.paragraphs[92].text = memorial.paragraphs[92].text.replace(".", ",")
-                memorial.paragraphs[93].text = memorial.paragraphs[93].text.replace("XXXX", str(modulo_1.isc) + " A")
-                memorial.paragraphs[93].text = memorial.paragraphs[93].text.replace(".", ",")
-                memorial.paragraphs[94].text = memorial.paragraphs[94].text.replace("XXXX", str(modulo_1.vmp) + " V")
-                memorial.paragraphs[94].text = memorial.paragraphs[94].text.replace(".", ",")
-                memorial.paragraphs[95].text = memorial.paragraphs[95].text.replace("XXXX", str(modulo_1.voc) + " V")
-                memorial.paragraphs[95].text = memorial.paragraphs[95].text.replace(".", ",")
-                memorial.paragraphs[96].text = memorial.paragraphs[96].text.replace("XXXX", str(modulo_1.eficiencia) + "%")
+                memorial.paragraphs[92].text = memorial.paragraphs[92].text.replace("XXXX", modulo_1.modelo)
+                memorial.paragraphs[93].text = memorial.paragraphs[93].text.replace("XXXX", modulo_1.fabricante)
+                memorial.paragraphs[94].text = memorial.paragraphs[94].text.replace("XXXX", modulo_1.tipo)
+                memorial.paragraphs[95].text = memorial.paragraphs[95].text.replace("XXXX", str(modulo_1.potencia) + " Wp")
+                memorial.paragraphs[96].text = memorial.paragraphs[96].text.replace("XXXX", str(modulo_1.imp) + " A")
                 memorial.paragraphs[96].text = memorial.paragraphs[96].text.replace(".", ",")
-                memorial.paragraphs[97].text = memorial.paragraphs[97].text.replace("XXXX", modulo_1.temperatura_nominal)
-                memorial.paragraphs[98].text = memorial.paragraphs[98].text.replace("XXXX", str(modulo_1.comprimento) + " x " + str(modulo_1.largura) + " x " + str(modulo_1.espessura) + " mm")
+                memorial.paragraphs[97].text = memorial.paragraphs[97].text.replace("XXXX", str(modulo_1.isc) + " A")
+                memorial.paragraphs[97].text = memorial.paragraphs[97].text.replace(".", ",")
+                memorial.paragraphs[98].text = memorial.paragraphs[98].text.replace("XXXX", str(modulo_1.vmp) + " V")
                 memorial.paragraphs[98].text = memorial.paragraphs[98].text.replace(".", ",")
+                memorial.paragraphs[99].text = memorial.paragraphs[99].text.replace("XXXX", str(modulo_1.voc) + " V")
+                memorial.paragraphs[99].text = memorial.paragraphs[99].text.replace(".", ",")
+                memorial.paragraphs[100].text = memorial.paragraphs[100].text.replace("XXXX", str(modulo_1.eficiencia) + "%")
+                memorial.paragraphs[100].text = memorial.paragraphs[100].text.replace(".", ",")
+                memorial.paragraphs[101].text = memorial.paragraphs[101].text.replace("XXXX", modulo_1.temperatura_nominal)
+                memorial.paragraphs[102].text = memorial.paragraphs[102].text.replace("XXXX", str(modulo_1.comprimento) + " x " + str(modulo_1.largura) + " x " + str(modulo_1.espessura) + " mm")
+                memorial.paragraphs[102].text = memorial.paragraphs[102].text.replace(".", ",")
 
                 memorial.paragraphs[paragrafo_atual - 17].text = memorial.paragraphs[paragrafo_atual - 17].text.replace("XXXX", str(projeto.quantidade_inversores))
                 memorial.paragraphs[paragrafo_atual - 16].text = memorial.paragraphs[paragrafo_atual - 16].text.replace("XXXX", str(projeto.potencia_inversores) + " kW")
@@ -989,10 +1009,10 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 memorial.paragraphs[paragrafo_atual + 54].text = memorial.paragraphs[paragrafo_atual + 54].text.replace("XXXX", str(projeto.geracao_12) + " kWh")
                 memorial.paragraphs[paragrafo_atual + 54].text = memorial.paragraphs[paragrafo_atual + 54].text.replace(".", ",")
                 
-                memorial.save(f'{diretorio_alterado}\\02_MEMORIAL_{cliente.nome}.docx')
+                memorial.save(f'{diretorio_alterado}\\02 - Memorial Descritivo - {nome_completo}.docx')
 
             elif projeto.aumento_carga == True:
-                memorial = docx.Document("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\02_MEMORIAL_AUMENTO.docx")
+                memorial = docx.Document("C:\\Users\\Henrique Castro\\Documents\\entrada-dados\\workbooks\\02 - Memorial Descritivo - Com Aumento.docx")
 
                 # Alterando informações da capa do memorial
                 memorial.paragraphs[25].text = memorial.paragraphs[25].text.replace("XXXX", instalacao.classificacao)
@@ -1271,11 +1291,11 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 memorial.paragraphs[paragrafo_atual + 53].text = memorial.paragraphs[paragrafo_atual + 53].text.replace("XXXX", str(projeto.geracao_12) + " kWh")
                 memorial.paragraphs[paragrafo_atual + 53].text = memorial.paragraphs[paragrafo_atual + 53].text.replace(".", ",")
                 
-                memorial.save(f"{diretorio_alterado}\\02_MEMORIAL_AUMENTO_{cliente.nome}.docx")
+                memorial.save(f"{diretorio_alterado}\\02 - Memorial Descritivo - Com Aumento - {nome_completo}.docx")
 
             # Alterando formulário para aumento de carga
             if projeto.aumento_carga == True or (projeto.ligacao_nova == True and instalacao.classificacao != "Rural"):
-                workbook = load_workbook('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//06_Formulário-Ligação-Nova-Urbana-e-Aumento-de-Carga-Sem-Disjuntor-Geral.xlsx')
+                workbook = load_workbook('C://Users//Henrique Castro//Documents//entrada-dados//workbooks//06 - Formulario para Ligacao Nova ou Aumento de Carga.xlsx')
                 sheet = workbook.get_sheet_by_name('Formulário Ligação Nova Urbana')
 
                 sheet["D25"] = cliente.nome
@@ -1283,9 +1303,9 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 sheet["C27"] = cliente.rg
                 sheet["E27"] = cliente.cpf
                 sheet["H27"] = cliente.nascimento
-                sheet["E28"] = 37998044360
-                sheet["H28"] = 3734021468
-                sheet["C29"] = "amorim.willy@hotmail.com"
+                sheet["E28"] = 37998262232
+                sheet["H28"] = 3798262232
+                sheet["C29"] = "engenharia@apollofotovoltaica.com.br"
                 sheet["D30"] = "Não"
                 sheet["F31"] = "Não"
 
@@ -1609,12 +1629,12 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                     sheet["C184"] = instalacao.classificacao
                     sheet["F184"] = instalacao.classificacao
 
-                workbook.save(f'{diretorio}//06_Formulário-Ligação-Nova-Urbana-e-Aumento-de-Carga-Sem-Disjuntor-Geral_{cliente.nome}.xlsx')
+                workbook.save(f'{diretorio}//06 - Formulario para Ligacao Nova ou Aumento de Carga - {nome_completo}.xlsx')
                 workbook.close()
 
             # Alterando formulário para ligação nova rural
             if projeto.ligacao_nova == True and instalacao.classificacao == "Rural":
-                workbook = load_workbook('workbooks//06_Formulario-LN-Rural-versao-Q.xlsx')
+                workbook = load_workbook('workbooks//06 - Formulario para Ligacao Nova Rural.xlsx')
                 sheet = workbook.get_sheet_by_name('Análise Para Ligação Nova Rural')
 
                 sheet["D23"] = cliente.nome
@@ -1622,9 +1642,9 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 sheet["C25"] = cliente.rg
                 sheet["E25"] = cliente.cpf
                 sheet["H25"] = cliente.nascimento
-                sheet["E26"] = 37998044360
-                sheet["H26"] = 3734021468
-                sheet["C27"] = "amorim.willy@hotmail.com"
+                sheet["E26"] = 37998262232
+                sheet["H26"] = 3798262232
+                sheet["C27"] = "engenharia@apollofotovoltaica.com.br"
                 sheet["D28"] = "Não"
                 sheet["F29"] = "Não"
 
@@ -1897,10 +1917,10 @@ def print_project(id: int, db: Session = Depends(get_db), usuario_atual: models.
                 
                 sheet["B105"] = "2 - Não tenho interesse em nenhum dos itens oferecidos. Estou ciente que não haverá nenhum tipo de ressarcimento."
 
-                workbook.save(f'{diretorio}//06_Formulario-LN-Rural-versao-Q_{cliente.nome}.xlsx')
+                workbook.save(f'{diretorio}//06 - Formulario para Ligacao Nova Rural - {nome_completo}.xlsx')
                 workbook.close()
 
-            return f"Formulário do cliente {cliente.nome} impresso com sucesso"
+            return f"Formulário do cliente {nome_completo} impresso com sucesso"
 
         # Caso a ID informada não esteja presente no banco de dados
         else:
