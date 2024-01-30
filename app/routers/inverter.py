@@ -76,7 +76,7 @@ def get_inverters(db: Session = Depends(get_db), usuario_atual: models.Usuario =
     
 # Função para adquirir os dados de todos inversores
 @router.get('/all-inverters', response_model=List[schemas.InverterOut])
-def get_inverters(db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
+def get_all_inverters(db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(oauth2.determinar_usuario_atual)):
     # Caso o usuário atual esteja validado
     if usuario_atual != None:
         # Filtrando os inversores do banco de dados de acordo com os parâmetros passados
