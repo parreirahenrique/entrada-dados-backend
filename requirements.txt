@@ -7,6 +7,7 @@ ecdsa==0.18.0
 et-xmlfile==1.1.0
 fastapi==0.109.0
 greenlet==3.0.3
+gunicorn==21.2.0
 h11==0.14.0
 httptools==0.6.1
 idna==3.6
@@ -15,6 +16,7 @@ jsonschema==4.21.1
 jsonschema-specifications==2023.12.1
 lxml==5.1.0
 openpyxl==3.1.2
+packaging==23.2
 passlib==1.7.4
 pillow==10.2.0
 psycopg2==2.9.9
