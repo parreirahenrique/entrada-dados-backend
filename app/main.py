@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, client, instalation, inverter, module, project, user
+import alembic
 
 app = FastAPI()
 
